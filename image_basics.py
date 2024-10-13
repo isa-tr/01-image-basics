@@ -123,25 +123,41 @@ def register_images(img, label_img, atlas_img):
     # todo: apply the obtained transform to register the image (img) to the atlas image (atlas_img)
     # hint: 'Resample' (with referenceImage=atlas_img, transform=transform, interpolator=sitkLinear,
     # defaultPixelValue=0.0, outputPixelType=img.GetPixelIDValue())
-    resampler = sitk.ResampleImageFilter()
-    resampler.SetReferenceImage(atlas_img)
-    resampler.SetInterpolator(sitk.sitkLinear)
-    resampler.SetDefaultPixelValue(0.0)
-    resampler.SetOutputPixelType(img.GetPixelIDValue())
-    resampler.SetTransform(transform)
-    registered_img = resampler.Execute(img)  # todo: modify here
+    registered_img = sitk.Resample(img,
+                                   referenceImage=atlas_img,
+                                   transform=transform,
+                                   interpolator=sitk.sitkLinear,
+                                   defaultPixelValue=0.0,
+                                   outputPixelType=img.GetPixelIDValue()
+                                  )                                   
+                                   
+    # resampler = sitk.ResampleImageFilter()
+    # resampler.SetReferenceImage(atlas_img)
+    # resampler.SetInterpolator(sitk.sitkLinear)
+    # resampler.SetDefaultPixelValue(0.0)
+    # resampler.SetOutputPixelType(img.GetPixelIDValue())
+    # resampler.SetTransform(transform)
+    # registered_img = resampler.Execute(img)  # todo: modify here
 
     # todo: apply the obtained transform to register the label image (label_img) to the atlas image (atlas_img), too
     # be careful with the interpolator type for label images!
     # hint: 'Resample' (with interpolator=sitkNearestNeighbor, defaultPixelValue=0.0,
     # outputPixelType=label_img.GetPixelIDValue())
-    label_resampler = sitk.ResampleImageFilter()
-    label_resampler.SetReferenceImage(atlas_img)
-    label_resampler.SetInterpolator(sitk.NearestNeighbor)
-    label_resampler.SetDefaultPixelValue(0.0)
-    label_resampler.SetOutputPixelType(label_img.GetPixelIDValue())
-    label_resampler.SetTransform(transform)
-    registered_label = label_resampler.Execute(label_img)  # todo: modify here
+    registered_label = sitk.Resample(label_img,
+                                     referenceImage=atlas_img,
+                                     transform=transform,
+                                     interpolator=sitk.NearestNeighbor,
+                                     defaultPixelValue=0.0,
+                                     outputPixelType=label_img.GetPixelIDValue()
+                                  )          
+                                     
+    #label_resampler = sitk.ResampleImageFilter()
+    #label_resampler.SetReferenceImage(atlas_img)
+    #label_resampler.SetInterpolator(sitk.NearestNeighbor)
+    #label_resampler.SetDefaultPixelValue(0.0)
+    #label_resampler.SetOutputPixelType(label_img.GetPixelIDValue())
+    #label_resampler.SetTransform(transform)
+    #registered_label = label_resampler.Execute(label_img)  # todo: modify here
 
     return registered_img, registered_label
 
