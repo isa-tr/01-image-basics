@@ -53,7 +53,7 @@ def load_image(img_path, is_label_img):
         pixel_type = sitk.sitkUInt8  # todo: modify here
     else:
         pixel_type = sitk.sitkFloat32
-    img = sitk. ReadImage(img_path, pixel_type)  # todo: modify here
+    img = sitk.ReadImage(img_path, pixel_type)  # todo: modify here
 
     return img
 
@@ -117,7 +117,7 @@ def register_images(img, label_img, atlas_img):
     """
     registration_method = _get_registration_method(
         atlas_img, img
-    )  # type: sitk.ImageRegistrationMethod
+    )
     transform = registration_method.Execute(atlas_img, img)  # todo: modify here
 
     # todo: apply the obtained transform to register the image (img) to the atlas image (atlas_img)
@@ -131,14 +131,6 @@ def register_images(img, label_img, atlas_img):
                                    outputPixelType=img.GetPixelIDValue()
                                   )                                   
                                    
-    # resampler = sitk.ResampleImageFilter()
-    # resampler.SetReferenceImage(atlas_img)
-    # resampler.SetInterpolator(sitk.sitkLinear)
-    # resampler.SetDefaultPixelValue(0.0)
-    # resampler.SetOutputPixelType(img.GetPixelIDValue())
-    # resampler.SetTransform(transform)
-    # registered_img = resampler.Execute(img)  # todo: modify here
-
     # todo: apply the obtained transform to register the label image (label_img) to the atlas image (atlas_img), too
     # be careful with the interpolator type for label images!
     # hint: 'Resample' (with interpolator=sitkNearestNeighbor, defaultPixelValue=0.0,
@@ -151,13 +143,6 @@ def register_images(img, label_img, atlas_img):
                                      outputPixelType=label_img.GetPixelIDValue()
                                   )          
                                      
-    #label_resampler = sitk.ResampleImageFilter()
-    #label_resampler.SetReferenceImage(atlas_img)
-    #label_resampler.SetInterpolator(sitk.NearestNeighbor)
-    #label_resampler.SetDefaultPixelValue(0.0)
-    #label_resampler.SetOutputPixelType(label_img.GetPixelIDValue())
-    #label_resampler.SetTransform(transform)
-    #registered_label = label_resampler.Execute(label_img)  # todo: modify here
 
     return registered_img, registered_label
 
@@ -180,7 +165,7 @@ def postprocess_largest_component(label_img):
     connected_components = sitk.ConnectedComponent(label_img)  # todo: modify here
 
     # todo: order the component by ascending component size (hint: 'RelabelComponent')
-    relabeled_components = sitk.RelabelComponent(connected_components, sortByObjectSize=True)  # todo: modify here
+    relabeled_components = sitk.RelabelComponent(connected_components)  # todo: modify here
 
-    largest_component = relabeled_components == 1  # zero is background
+    largest_component = sitk.GetArrayFromImage(relabeled_components) == 1  # zero is background
     return largest_component
