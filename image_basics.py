@@ -155,5 +155,5 @@ def postprocess_largest_component(label_img):
     """
     connected_components = sitk.ConnectedComponent(label_img)
     relabeled_components = sitk.RelabelComponent(connected_components)
-    largest_component = sitk.GetArrayFromImage(relabeled_components) == 1
+    largest_component = relabeled_components == 1
     return largest_component
